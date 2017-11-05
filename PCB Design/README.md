@@ -3,3 +3,6 @@ This PCB consists of an MSP430FR2311 chip, a bulk and bypass capacitor, two 8-pi
 
 Below is a link to the cart that has all of the parts that are needed to be bought.  Also below is a table for a bill of materials for this breakout board.
 
+https://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=6f11333891
+
+![](https://github.com/RU09342/lab-5-sensing-the-world-around-you-upside-world-team-2-0/blob/master/PCB%20Design/Bill%20of%20Materials.PNG)
