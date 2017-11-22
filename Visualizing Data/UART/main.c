@@ -1,8 +1,14 @@
+/*
+*Upside Down World Team
+*Kishan Patel
+*Josh Band
+*Last Revision: 11/22/17
+*/
 #include <msp430g2553.h>
-// Global variables
+//Used for storing the raw Temperature value
 unsigned volatile int rawTemp=0;
-unsigned volatile int ADC_value2 = 0;
-volatile int asciiTemp [5] ;
+//Used to store each digit of the temperature ( tens, ones, decimal point, tenths, space)
+unsigned volatile int asciiTemp [5] ;
 
 // Function prototypes
 void ConfigureAdc(void);
@@ -19,14 +25,17 @@ void main(void)
         BCSCTL1 = CALBC1_1MHZ;          // Set range   DCOCTL = CALDCO_1MHZ;
         BCSCTL2 &= ~(DIVS_3);           // SMCLK = DCO = 1MHz
         P1SEL |= BIT3;                  // ADC input pin P1.3
-                       // ADC set-up function call
+        
+		//Function to set up UART
         configureUART();
         __enable_interrupt();           // Enable interrupts.
 
         while(1)
         {
+			//Function to set up ADC
             ConfigureAdc();
-            __delay_cycles(100000);               // Wait for ADC Ref to settle
+			//Delay between ADC conversions.
+            __delay_cycles(100000);               
             __delay_cycles(100000);
             __delay_cycles(100000);
             __delay_cycles(100000);
@@ -34,7 +43,7 @@ void main(void)
             __delay_cycles(100000);
             ADC10CTL0 |= ENC + ADC10SC;         // Sampling and conversion start
             __bis_SR_register(CPUOFF + GIE);    // Low Power Mode 0 with interrupts enabled
-//            ADC_value1 = ADC10MEM;               // Assigns the value held in ADC10MEM to the integer called ADC_value
+
 
         }
 
@@ -45,70 +54,36 @@ void main(void)
 #pragma vector=ADC10_VECTOR
 __interrupt void ADC10_ISR (void)
 {
+	//Ensure that we are not doing any ADC calculations during this interrupt
     ADC10CTL0 &= ~(ENC + ADC10SC);
+	//Convert the raw temperature to a voltage value in millivolts.
+	//This code is configured for the LM35 Temperature Sensor.
     rawTemp = ADC10MEM*3.47;
+	
+	//Take the tens place
     asciiTemp[0] = rawTemp/100;
-        asciiTemp[1] = (rawTemp/10)%10;
-        asciiTemp[2] = 71;
-        asciiTemp[3] = rawTemp%10;
-        asciiTemp[4] = 32;
-        volatile int i=0;
-        volatile int j = 0;
+	//Take the ones place
+    asciiTemp[1] = (rawTemp/10)%10;
+	//Ascii value for period
+    asciiTemp[2] = 71;
+	//Take the tenths place
+    asciiTemp[3] = rawTemp%10;
+	//Ascii value for space
+    asciiTemp[4] = 32;
+    
 
         for(i=0;i<5;i++){
             while (!(IFG2&UCA0TXIFG));
-           // j = convertToASCII(asciiTemp[i]);
+           //Transmit the contents of the asciitemp array
             UCA0TXBUF = convertToASCII(asciiTemp[i]);
         }
-        /**
-        UCA0TXBUF = convertToASCII(asciiTemp[0]);
-        UCA0TXBUF = convertToASCII(asciiTemp[1]);
-        UCA0TXBUF = convertToASCII(asciiTemp[2]);
-        UCA0TXBUF = convertToASCII(asciiTemp[3]);
-        **/
-    /**
-    asciiTemp[0] = rawTemp/100;
-    asciiTemp[1] = (rawTemp/10)%10;
-    asciiTemp[2] = 71;
-    asciiTemp[3] = rawTemp%10;
-    **/
-/**
-    UCA0TXBUF = rawTemp/100;
-    UCA0TXBUF = (rawTemp/10)%10;
-    UCA0TXBUF = 71;
-    UCA0TXBUF = rawTemp%10;
-**/
- //   IE2 |= UCA0TXIE;
+       
 
-
+	//reset the ADC interrupt flag
     ADC10CTL0 &=~ADC10IFG;
     __bic_SR_register_on_exit(CPUOFF + GIE);        // Return to active mode }
 }
-/**
-#pragma vector=USCIAB0TX_VECTOR
-__interrupt void USCI0TX_ISR(void){
-    volatile int i = 0;
-
-      while (!(IFG2&UCA0TXIFG));               // USCI_A0 TX buffer ready?
-      volatile int j=0;
-      for(j;j<3;j++){
-          i = convertToASCII(asciiTemp[j]);
-
-
-
-        UCA0TXBUF = (char) i;
-      }
-      //  UCA0TXBUF = convertToASCII(asciiTemp[1]);
-       // UCA0TXBUF = convertToASCII(asciiTemp[2]);
-       // UCA0TXBUF = convertToASCII(asciiTemp[3]);
-    //UCA0TXBUF = '7';
-
-
-    IE2 &= ~UCA0TXIE;
-
-}
-
-**/
+//Function for converting an int to its respective ASCII value.
 int convertToASCII(int converting){
     switch(converting){
                     case 0:
@@ -151,7 +126,7 @@ int convertToASCII(int converting){
 
 }
 
-// Function containing ADC set-up
+// Function containing ADC set up
 void ConfigureAdc(void)
 {
 
@@ -159,7 +134,7 @@ void ConfigureAdc(void)
     ADC10CTL0 = SREF_0 + ADC10SHT_3 + ADC10ON + ADC10IE + MSC;  // Vcc & Vss as reference, Sample and hold for 64 Clock cycles, ADC on, ADC interrupt enable
     ADC10AE0 |= BIT3;                         // ADC input enable P1.3
 }
-
+//Funciton containing UART set up
 void configureUART(void){
     DCOCTL = 0;                               // Select lowest DCOx and MODx settings
     BCSCTL1 = CALBC1_1MHZ;                    // Set DCO
@@ -171,5 +146,4 @@ void configureUART(void){
     UCA0BR1 = 0;                              // 1MHz 9600
     UCA0MCTL = UCBRS0;                        // Modulation UCBRSx = 1
     UCA0CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
-  //  IE2 |= UCA0TXIE;                          // Enable USCI_A0 TX interrupt
 }
