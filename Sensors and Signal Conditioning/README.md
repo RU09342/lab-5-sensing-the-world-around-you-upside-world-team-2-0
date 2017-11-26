@@ -3,6 +3,7 @@
 The purpose of this lab was to understand how to bring a microcontroller over to the analog world.  In order to talk with analog components there needs to be a translation from digital to analog.  In order to for this conversion to work a sensor is used to read a voltage, current, or resistance.  A signal conditioning block is then used convert that measurement into a voltage.  That voltage may be too high or too low for the microcontroller to read so the signal may need to be changed, whether amplified of filtered.
 
 ## Sensors
+There are three different types of sensors that are used in this lab.  The first being a temperature sensor.  A temperature sensor, which can also be called a thermistor are thermally sensitvive resistors that change resistance when there is a change in termperature.  Another sensor being used is a phototransistor.  A phototransistor or photodiode is a semiconductor device that converts light into an electrical current.  More current is generated when more light shines on the diode.
 
 ### Temperature Sensor - Voltage
 #### Hardware
