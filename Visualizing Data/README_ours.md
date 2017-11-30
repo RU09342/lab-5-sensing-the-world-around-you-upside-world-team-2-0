@@ -1,11 +1,11 @@
-#Visualising Data
-##Methods chosen
+# Visualising Data
+## Methods chosen
 In order to visualise the data being read from the sensors, three different methods are used.
 1. UART
 2. LCD screen
 3. MATLAB
 
-###Bill of Materials
+### Bill of Materials
 The three data visualisation techniques all require different materials. Below each section will be a set of numbers
 that will be keys to the Materials listed below, designating what is needed to implement the different data 
 visualisation techniques.
@@ -15,6 +15,7 @@ visualisation techniques.
 4. Subscription to MATLAB
 5. Putty
 
+<<<<<<< HEAD
 ###Limitations
 The code that is used for these implementations does feature various limitations. They are listed and explained below.
 1. Displayed in degrees Celsius only. Note, it is fairly straightforward to convert the code to be able to 
@@ -24,6 +25,9 @@ assumes a maximum of 99.9 degrees, however more precision can be added by adjust
 3. Minimum temperature of 0 degrees celsius. This is due to the specific implementation of the LM35 circuit.
 We do not allow for negative values of temperature, as it would have been too difficult to test.
 
+=======
+#### LM35 Temperature sensor
+>>>>>>> 2e105cbf78e794cb1cfafe0596609482a4a312f0
 In order to understand how to implement any of these data visualisation methods, it is important to understand
 how the LM35 works. The pinout for the LM35 can be seen below:
 [![LM35 pinout](/pictures/LM35.jpg)]
@@ -43,9 +47,13 @@ is a linear sensor, a negative voltage would be needed to measure negative tempe
 we are limited to temperatures between 0C and 99C, as it is not expected to need to go outside this range 
 for this particular implementation.
 
+<<<<<<< HEAD
 
 
 ####UART
+=======
+#### UART
+>>>>>>> 2e105cbf78e794cb1cfafe0596609482a4a312f0
 Required: 1,3,5
 Data is streamed via UART over a serial connection to the laptop. UART is configured at a 9600 Baud Rate. For the
 purpose of this demonstration, 10 bit ADC is used on the MSP430G2553. Externally, an LM35 Temperature sensor
@@ -54,7 +62,7 @@ over UART to the PC. The values that are read by the MSP are converted to ASCII 
 on a serial communication application. In this case, Putty is used. An example of this can be seen below:
 [![UART example](/pictures/example_UART.jpg)]
 
-####LCD
+#### LCD
 Required: 2,3
 The second way that data is displayed is via the LCD (Liquid Crystal Display) screen that is present on the
 msp430FR6989. An example of what this looks like can be seen below:
