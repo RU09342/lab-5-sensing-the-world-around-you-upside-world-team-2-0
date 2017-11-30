@@ -4,6 +4,48 @@
 *Josh Band
 *Last Revision: 11/22/17
 */
+
+* ============================================================================ */
+/* Copyright (c) 2017, Texas Instruments Incorporated                           */
+/*  All rights reserved.                                                        */
+/*                                                                              */
+/*  Redistribution and use in source and binary forms, with or without          */
+/*  modification, are permitted provided that the following conditions          */
+/*  are met:                                                                    */
+/*                                                                              */
+/*  *  Redistributions of source code must retain the above copyright           */
+/*     notice, this list of conditions and the following disclaimer.            */
+/*                                                                              */
+/*  *  Redistributions in binary form must reproduce the above copyright        */
+/*     notice, this list of conditions and the following disclaimer in the      */
+/*     documentation and/or other materials provided with the distribution.     */
+/*                                                                              */
+/*  *  Neither the name of Texas Instruments Incorporated nor the names of      */
+/*     its contributors may be used to endorse or promote products derived      */
+/*     from this software without specific prior written permission.            */
+/*                                                                              */
+/*  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" */
+/*  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,       */
+/*  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR      */
+/*  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR            */
+/*  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,       */
+/*  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,         */
+/*  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; */
+/*  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,    */
+/*  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR     */
+/*  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,              */
+/*  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                          */
+/* ============================================================================ */
+
+/********************************************************************
+*
+* Standard register and bit definitions for the Texas Instruments
+* MSP430 microcontroller.
+*
+* This file supports assembler and C development for
+* MSP430FR6989 devices.
+***********************************************************************************/
+
 #include <msp430g2553.h>
 //Used for storing the raw Temperature value
 unsigned volatile int rawTemp=0;
@@ -130,7 +172,7 @@ int convertToASCII(int converting){
 void ConfigureAdc(void)
 {
 
-    ADC10CTL1 = INCH_3 + ADC10DIV_3 + CONSEQ_2 ;         // Channel 3, ADC10CLK/3
+    ADC10CTL1 = INCH_3 + ADC10DIV_3 + CONSEQ_1 ;         // ADC input channel 3, divider of 3, single channel, repeated
     ADC10CTL0 = SREF_0 + ADC10SHT_3 + ADC10ON + ADC10IE + MSC;  // Vcc & Vss as reference, Sample and hold for 64 Clock cycles, ADC on, ADC interrupt enable
     ADC10AE0 |= BIT3;                         // ADC input enable P1.3
 }

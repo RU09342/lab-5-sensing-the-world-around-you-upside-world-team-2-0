@@ -5,6 +5,47 @@
 *Last Revision: 11/22/17
 **/
 
+* ============================================================================ */
+/* Copyright (c) 2017, Texas Instruments Incorporated                           */
+/*  All rights reserved.                                                        */
+/*                                                                              */
+/*  Redistribution and use in source and binary forms, with or without          */
+/*  modification, are permitted provided that the following conditions          */
+/*  are met:                                                                    */
+/*                                                                              */
+/*  *  Redistributions of source code must retain the above copyright           */
+/*     notice, this list of conditions and the following disclaimer.            */
+/*                                                                              */
+/*  *  Redistributions in binary form must reproduce the above copyright        */
+/*     notice, this list of conditions and the following disclaimer in the      */
+/*     documentation and/or other materials provided with the distribution.     */
+/*                                                                              */
+/*  *  Neither the name of Texas Instruments Incorporated nor the names of      */
+/*     its contributors may be used to endorse or promote products derived      */
+/*     from this software without specific prior written permission.            */
+/*                                                                              */
+/*  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" */
+/*  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,       */
+/*  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR      */
+/*  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR            */
+/*  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,       */
+/*  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,         */
+/*  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; */
+/*  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,    */
+/*  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR     */
+/*  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,              */
+/*  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                          */
+/* ============================================================================ */
+
+/********************************************************************
+*
+* Standard register and bit definitions for the Texas Instruments
+* MSP430 microcontroller.
+*
+* This file supports assembler and C development for
+* MSP430FR6989 devices.
+***********************************************************************************/
+
 #include <msp430FR6989.h>
 #include <LCDDriver.h>
 
@@ -29,8 +70,10 @@ int main(void)
       configureLCD();
       configureADC();
       configureTimer();
+	  
 	  //Turn the LCD On
       LCDCCTL0 |= LCDON;
+	  
       // Startup clock system with max DCO setting ~8MHz
       CSCTL0_H = CSKEY >> 8;                    // Unlock clock registers
       CSCTL1 = DCOFSEL_3 | DCORSEL;             // Set DCO to 8MHz
@@ -40,12 +83,10 @@ int main(void)
 
 
       
-      int i = 0;
-      while(1){
-	  //Just Keep encoding repeatedly
-          ADC12CTL0 |= ADC12ENC | ADC12SC;
-      __bis_SR_register(LPM3_bits | GIE);       // Enter LPM3, interrupts enabled
 
+      while(1){
+	  //Just keep Calculating the ADC value repeatedly
+       ADC12CTL0 |= ADC12ENC | ADC12SC;
       }
 
 
@@ -56,6 +97,7 @@ int main(void)
 
     return 0;
 }
+//Function to configure the LCD screen
 void configureLCD(void){
     PJSEL0 = BIT4 | BIT5;                   // For LFXT
 
@@ -98,16 +140,16 @@ void configureLCD(void){
 
 
 }
-
+//Function to configure the ADC
 void configureADC(void){
-    P1SEL1 |= BIT3;                         // Configure P1.1 for ADC
+    P1SEL1 |= BIT3;                         // Configure P1.3 for ADC
     P1SEL0 |= BIT3;
-    ADC12CTL0 = ADC12SHT0_15 | ADC12ON;       // Sampling time, ADC12 on
-      ADC12CTL1 = ADC12SHP | ADC12CONSEQ_2;                     // Use sampling timer
-      ADC12CTL2 |= ADC12RES_2;                  // 12-bit conversion results
-      ADC12MCTL0 |= ADC12INCH_3 | ADC12VRSEL_0;     // Channel2 ADC input select; Vref=AVCC
-     ADC12IER0 |= ADC12IE0;
-      ADC12CTL0 |= ADC12ENC | ADC12SC;
+    ADC12CTL0 = ADC12SHT0_15 | ADC12ON;       // Configure the sampling time, turn ADC12 on
+      ADC12CTL1 = ADC12SHP | ADC12CONSEQ_1;   // Pulse sample mode, single channel, repeated.
+      ADC12CTL2 |= ADC12RES_2;                  // 12 bit ADC configuration
+      ADC12MCTL0 |= ADC12INCH_3 | ADC12VRSEL_0;     // ADC channel 3, select VCC as reference
+     ADC12IER0 |= ADC12IE0;							//Enable ADC interrupt
+      ADC12CTL0 |= ADC12ENC | ADC12SC;				//Begin encoding ADC
 }
 //ADC ISR
 #if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
@@ -130,8 +172,7 @@ void __attribute__ ((interrupt(ADC12_VECTOR))) ADC12_ISR (void)
         case ADC12IV_ADC12IFG0:             // Vector 12:  ADC12MEM0 Interrupt
 			//Since we are doing ADC 12 bit, we are multiply the value calculated in the 
 			//ADCMem register by .8 ( 3.3/2^12)
-            rawTemp = ADC12MEM0*.8;
-          
+            rawTemp = ADC12MEM0*.8;      
 
 
 
@@ -176,15 +217,17 @@ void __attribute__ ((interrupt(ADC12_VECTOR))) ADC12_ISR (void)
 //Set up timer
 void configureTimer(void){
     TA0CCTL0 = CCIE;                          // TACCR0 interrupt enabled
-    TA0CCR0 = 1500;
-    TA0CTL = TASSEL_1 | MC_1;
-}
+    TA0CCR0 = 1500;							//Set CCR0 at 1500
+    TA0CTL = TASSEL_1 | MC_1;				//Use SMCLK and Up mode
+}	
 //Function to display the current temperature saved to the LCD 
 void updateDisplay(void){
-    showChar( (char) (rawTemp/100)+48 ,3);
-    showChar((char)((rawTemp/10)%10)+48,4);
-    showChar('A',5);
-    showChar((char)(rawTemp%10)+48,6);
+//Tens, ones, decimal point, tenths, space  , C
+    showChar( (char) (rawTemp/100)+48 ,2);
+    showChar((char)((rawTemp/10)%10)+48,3);
+    showChar('.',4);
+    showChar((char)(rawTemp%10)+48,5);
+    showChar('C',6);
 }
 //ISR for the timer, used to update the display (meaning that the currently displayed temperature
 //may not necessarily be the measured temperature
