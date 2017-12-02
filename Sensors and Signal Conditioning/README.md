@@ -16,8 +16,6 @@ The temperature sensor that was used in this lab was an LM35.  The LM35 can be s
 ![LM35 Circuit](https://github.com/RU09342/lab-5-sensing-the-world-around-you-upside-world-team-2-0/blob/master/Sensors%20and%20Signal%20Conditioning/Voltage_LM35_Temp/LM35Circuit.JPG "LM35 Circuit")
 
 
-#### Software
-
 ### Phototransistor - Current
 ![](https://github.com/RU09342/lab-5-sensing-the-world-around-you-upside-world-team-2-0/blob/master/pictures/phototransistor.jpg)
 #### Hardware
@@ -26,8 +24,6 @@ The phototransitor is made up of an OP805SL.  The circuit is shown below.  The p
 ![](https://github.com/RU09342/lab-5-sensing-the-world-around-you-upside-world-team-2-0/blob/master/Sensors%20and%20Signal%20Conditioning/Current_PhotoTransistor/PhotoResistorCircuit.JPG "PhotoResistor Circuit")
 
 
-#### Software
-
 ### Thermistor - Resistance
 ![]https://github.com/RU09342/lab-5-sensing-the-world-around-you-upside-world-team-2-0/blob/master/pictures/Thermistor.jpg)
 #### Hardware
@@ -35,4 +31,5 @@ A thermistor is a type of resistor whose resistance is dependent on temperature.
 
 ![](https://github.com/RU09342/lab-5-sensing-the-world-around-you-upside-world-team-2-0/blob/master/Sensors%20and%20Signal%20Conditioning/Resistance_Thermistor/Thermistor%20Circuit.JPG "Thermistor Circuit")
 
-#### Software
+### Software
+All of the software for this portion was relatively the same. ADC is used, and the voltage that is measured is then converted to a physical quantity (eg, voltage to temperature, and voltage to luminosity)
