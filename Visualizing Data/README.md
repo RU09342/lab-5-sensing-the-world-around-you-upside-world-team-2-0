@@ -1,11 +1,11 @@
-#Visualising Data
-##Methods chosen
+# Visualising Data
+## Methods chosen
 In order to visualise the data being read from the sensors, three different methods are used.
 1. UART
 2. LCD screen
 3. MATLAB
 
-###Bill of Materials
+### Bill of Materials
 The three data visualisation techniques all require different materials. Below each section will be a set of numbers
 that will be keys to the Materials listed below, designating what is needed to implement the different data 
 visualisation techniques.
@@ -15,7 +15,7 @@ visualisation techniques.
 4. Subscription to MATLAB
 5. Putty
 
-###Limitations
+### Limitations
 The code that is used for these implementations does feature various limitations. They are listed and explained below.
 1. Displayed in degrees Celsius only. Note, it is fairly straightforward to convert the code to be able to 
 run in degrees Farenheit.
@@ -35,8 +35,8 @@ The LM35 is a linear temperature sensor, meaning that the measured output voltag
 The linear constant by with the temperature varies with voltage is 10mV/C.
 According to the datasheet, the sensor is rated for temperatures between -55C and 150C. Note, there are two
 different ways to set up this circuit. They are both shown below:
-[![LM35 basic](/pictures/LM35_basic.jpg)]
-[![LM35 advanced](/pictures/LM35_with_neg.jpg)]
+![](/pictures/LM35_basic.JPG)
+![](/pictures/LM35_with_neg.JPG)
 
 The basic configuration is used in this case. This will give us a voltage range between 2C to 150C. Since this 
 is a linear sensor, a negative voltage would be needed to measure negative temperatures. For these implementations,
@@ -45,7 +45,7 @@ for this particular implementation.
 
 
 
-####UART
+#### UART
 Required: 1,3,5
 Data is streamed via UART over a serial connection to the laptop. UART is configured at a 9600 Baud Rate. For the
 purpose of this demonstration, 10 bit ADC is used on the MSP430G2553. Externally, an LM35 Temperature sensor
@@ -54,14 +54,14 @@ over UART to the PC. The values that are read by the MSP are converted to ASCII 
 on a serial communication application. In this case, Putty is used. An example of this can be seen below:
 [![UART example](/pictures/example_UART.jpg)]
 
-####LCD
+#### LCD
 Required: 2,3
 The second way that data is displayed is via the LCD (Liquid Crystal Display) screen that is present on the
 msp430FR6989. An example of what this looks like can be seen below:
 [![LCD example](/pictures/LCD_In_action.jpg)]
 ADC is continuously calculated, and the screen will refresh at its own rate.
 
-####MATLAB
+#### MATLAB
 Required: 1,3,4
 The third way that data is displayed is via the serial communication toolbox that is available in MATLAB.
 An example of this code being used can be seen below:
